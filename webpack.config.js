@@ -10,6 +10,7 @@ module.exports = {
   entry: {
     app: './src/app.js',
     background: './src/background.js',
+    content: './src/content.js',
   },
   output: {
     path: path.join(__dirname, 'build'),
