@@ -1,24 +1,40 @@
 <template>
   <div>
-    Text: 
+    Selected text:
     {{ selectedText }}
+    TranslatedText: 
+    {{ translateText }}
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
       selectedText: '',
+      translateText: '',
+    }
+  },
+  methods: {
+    setTranslateText() {
+      axios
+        .get()
+        .then(({ data }) => {
+          this.translateText = data.result;
+        })
+        .catch((err) => console.log(err));
     }
   },
   mounted() {
-    //TODO: refactor
+    //TODO: refactor use vue-rx (orr add debounce)
     document.addEventListener('selectionchange', () => {
-      const thetext = window.getSelection().toString();
+      const text = window.getSelection().toString();
 
-      if (thetext.length > 0) {
-        this.selectedText = thetext;
+      if (text.length > 0) {
+        this.selectedText = text;
+        this.setTranslateText();
       } else {
         this.selectedText = '';
       }
