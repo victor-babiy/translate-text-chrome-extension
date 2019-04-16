@@ -1,7 +1,11 @@
 <template>
-  <div v-if="showPopup" class="translate-extention" :style="{top: topPosition + 'px', left: leftPosition + 'px'}">
+  <div
+    v-if="showPopup"
+    class="translate-extention"
+    :style="{ top: postitionTop, left: positionLeft }">
+
     <div class="block">
-      <select v-model="selectedSourceLanguage" @change="setTranslateText">
+      <select :value="sourceLanguage" @change="setSourceLanguage">
         <option v-for="sourceLanguage in sourceLanguages" :value="sourceLanguage.lang" :key="sourceLanguage.lang">
           {{ sourceLanguage.name }}
         </option>
@@ -10,18 +14,18 @@
     </div>
 
     <div class="block">
-      <select v-model="selectedTranslateLanguage" @change="setTranslateText">
-        <option v-for="translateLanguage in translateLanguages" :value="translateLanguage.lang" :key="translateLanguage.lang">
-          {{ translateLanguage.name }}
+      <select :value="translationLanguage" @change="setTranslationLanguage">
+        <option v-for="translationLanguage in translationLanguages" :value="translationLanguage.lang" :key="translationLanguage.lang">
+          {{ translationLanguage.name }}
         </option>
       </select>
-      <p>{{ translateText }}</p>
+      <p>{{ translationText }}</p>
     </div>
+
   </div>
 </template>
 
 <script>
-import axios from 'axios';
 import debounce from 'lodash.debounce';
 
 // shanti.oren@buycow.org
@@ -29,54 +33,69 @@ export default {
   data() {
     return {
       showPopup: false,
-      selectedText: '',
-      translateText: '',
-      selectedSourceLanguage: 'en',
+
       sourceLanguages: [
         { lang: 'en', name: 'English' },
-        { lang: 'it', name: 'Italian' },
-      ],
-      selectedTranslateLanguage: 'ukr',
-      translateLanguages: [
         { lang: 'ukr', name: 'Ukrainian' },
-        { lang: 'it', name: 'Italian' },
       ],
-      topPosition: 0,
-      leftPosition: 0,
+      translationLanguages: [
+        { lang: 'ukr', name: 'Ukrainian' },
+        { lang: 'en', name: 'English' },
+      ],
+
+      postitionTop: '',
+      positionLeft: '',
     }
+  },
+  computed: {
+    sourceLanguage() {
+      return this.$store.state.sourceLanguage;
+    },
+    translationLanguage() {
+      return this.$store.state.translationLanguage;
+    },
+    selectedText() {
+      return this.$store.state.selectedText;
+    },
+    translationText() {
+      return this.$store.state.translationText;
+    },
   },
   methods: {
-    // TODO: rename
-    setTranslateText() {
-      // TODO: delete user name and key before send to review
-      axios
-        .get(`https://api.mymemory.translated.net/get?q=${this.selectedText}&langpair=${this.selectedSourceLanguage}|${this.selectedTranslateLanguage}&key=4d22ec0bbf1a8a7327a7&user=shanti.oren`)
-        .then(({ data }) => {
-          this.translateText = data.responseData.translatedText;
-          console.log(data)
-        })
-        .catch((err) => console.log(err));
-      // this.translateText = 'Запрос на API!'
-    },
     handle() {
       const text = window.getSelection().toString();
-      const { top, left, height } = window.getSelection().getRangeAt(0).getBoundingClientRect();
-
-      this.topPosition = top + height;
-      this.leftPosition = left;
 
       if (text.length > 0) {
-        this.selectedText = text;
-        this.setTranslateText();
-        this.showPopup = true;
+        this.$store.commit('setSelectedText', text);
+        this.$store.dispatch('translateText')
+          .then(() => {
+            this.showPopup = true;
+            this.setPopupPosition();
+          });
       } else {
-        this.selectedText = '';
         this.showPopup = false;
+        this.$store.commit('setSelectedText', '');
       }
-    }
+    },
+    setPopupPosition() {
+      const { top, left, height } = window.getSelection()
+        .getRangeAt(0)
+        .getBoundingClientRect();
+
+      this.postitionTop = top + height + 'px';
+      this.positionLeft = left + 'px';
+    },
+    setSourceLanguage(event) {
+      this.$store.commit('setSourceLanguage', event.target.value);
+      this.$store.dispatch('translateText');
+    },
+    setTranslationLanguage(event) {
+      this.$store.commit('setTranslationLanguage', event.target.value);
+      this.$store.dispatch('translateText');
+    },
   },
   mounted() {
-    document.addEventListener('selectionchange', debounce(this.handle, 400));
+    document.addEventListener('selectionchange', debounce(this.handle, 50));
   }
 }
 </script>
