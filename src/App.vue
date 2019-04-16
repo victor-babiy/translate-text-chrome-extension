@@ -5,20 +5,30 @@
     :style="{ top: postitionTop, left: positionLeft }">
 
     <div class="block">
-      <select :value="sourceLanguage" @change="setSourceLanguage">
-        <option v-for="sourceLanguage in sourceLanguages" :value="sourceLanguage.lang" :key="sourceLanguage.lang">
+      <select
+        :value="sourceLanguage" 
+        @change="setSourceLanguage">
+        <option
+          v-for="sourceLanguage in languages"
+          :value="sourceLanguage.lang"
+          :key="sourceLanguage.lang">
           {{ sourceLanguage.name }}
         </option>
       </select>
+      <img :src="sourceLanguageFlag" alt="flag" width="50">
       <p>{{ selectedText }}</p>
     </div>
 
     <div class="block">
       <select :value="translationLanguage" @change="setTranslationLanguage">
-        <option v-for="translationLanguage in translationLanguages" :value="translationLanguage.lang" :key="translationLanguage.lang">
+        <option 
+          v-for="translationLanguage in languages"
+          :value="translationLanguage.lang" 
+          :key="translationLanguage.lang">
           {{ translationLanguage.name }}
         </option>
       </select>
+      <img :src="translationLanguageFlag" alt="flag" width="50">
       <p>{{ translationText }}</p>
     </div>
 
@@ -33,16 +43,6 @@ export default {
   data() {
     return {
       showPopup: false,
-
-      sourceLanguages: [
-        { lang: 'en', name: 'English' },
-        { lang: 'ukr', name: 'Ukrainian' },
-      ],
-      translationLanguages: [
-        { lang: 'ukr', name: 'Ukrainian' },
-        { lang: 'en', name: 'English' },
-      ],
-
       postitionTop: '',
       positionLeft: '',
     }
@@ -60,6 +60,18 @@ export default {
     translationText() {
       return this.$store.state.translationText;
     },
+    countryFlags() {
+      return this.$store.state.countryFlags;
+    },
+    languages() {
+      return this.$store.state.languages;
+    },
+    sourceLanguageFlag() {
+      return this.$store.state.sourceLanguageFlag;
+    },
+    translationLanguageFlag() {
+      return this.$store.state.translationLanguageFlag;
+    }
   },
   methods: {
     handle() {
@@ -93,6 +105,9 @@ export default {
       this.$store.commit('setTranslationLanguage', event.target.value);
       this.$store.dispatch('translateText');
     },
+  },
+  created() {
+    this.$store.dispatch('setFlags');
   },
   mounted() {
     document.addEventListener('selectionchange', debounce(this.handle, 50));

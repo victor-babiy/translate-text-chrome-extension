@@ -2792,6 +2792,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2800,16 +2810,6 @@ __webpack_require__.r(__webpack_exports__);
   data() {
     return {
       showPopup: false,
-
-      sourceLanguages: [
-        { lang: 'en', name: 'English' },
-        { lang: 'ukr', name: 'Ukrainian' },
-      ],
-      translationLanguages: [
-        { lang: 'ukr', name: 'Ukrainian' },
-        { lang: 'en', name: 'English' },
-      ],
-
       postitionTop: '',
       positionLeft: '',
     }
@@ -2827,6 +2827,18 @@ __webpack_require__.r(__webpack_exports__);
     translationText() {
       return this.$store.state.translationText;
     },
+    countryFlags() {
+      return this.$store.state.countryFlags;
+    },
+    languages() {
+      return this.$store.state.languages;
+    },
+    sourceLanguageFlag() {
+      return this.$store.state.sourceLanguageFlag;
+    },
+    translationLanguageFlag() {
+      return this.$store.state.translationLanguageFlag;
+    }
   },
   methods: {
     handle() {
@@ -2860,6 +2872,9 @@ __webpack_require__.r(__webpack_exports__);
       this.$store.commit('setTranslationLanguage', event.target.value);
       this.$store.dispatch('translateText');
     },
+  },
+  created() {
+    this.$store.dispatch('setFlags');
   },
   mounted() {
     document.addEventListener('selectionchange', lodash_debounce__WEBPACK_IMPORTED_MODULE_0___default()(this.handle, 50));
@@ -2899,7 +2914,7 @@ var render = function() {
                 domProps: { value: _vm.sourceLanguage },
                 on: { change: _vm.setSourceLanguage }
               },
-              _vm._l(_vm.sourceLanguages, function(sourceLanguage) {
+              _vm._l(_vm.languages, function(sourceLanguage) {
                 return _c(
                   "option",
                   {
@@ -2916,6 +2931,10 @@ var render = function() {
               0
             ),
             _vm._v(" "),
+            _c("img", {
+              attrs: { src: _vm.sourceLanguageFlag, alt: "flag", width: "50" }
+            }),
+            _vm._v(" "),
             _c("p", [_vm._v(_vm._s(_vm.selectedText))])
           ]),
           _vm._v(" "),
@@ -2926,7 +2945,7 @@ var render = function() {
                 domProps: { value: _vm.translationLanguage },
                 on: { change: _vm.setTranslationLanguage }
               },
-              _vm._l(_vm.translationLanguages, function(translationLanguage) {
+              _vm._l(_vm.languages, function(translationLanguage) {
                 return _c(
                   "option",
                   {
@@ -2944,6 +2963,14 @@ var render = function() {
               }),
               0
             ),
+            _vm._v(" "),
+            _c("img", {
+              attrs: {
+                src: _vm.translationLanguageFlag,
+                alt: "flag",
+                width: "50"
+              }
+            }),
             _vm._v(" "),
             _c("p", [_vm._v(_vm._s(_vm.translationText))])
           ])
@@ -12976,6 +13003,31 @@ new vue__WEBPACK_IMPORTED_MODULE_0__["default"]({
 
 /***/ }),
 
+/***/ "./src/countries.js":
+/*!**************************!*\
+  !*** ./src/countries.js ***!
+  \**************************/
+/*! exports provided: languages */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "languages", function() { return languages; });
+const languages = [
+  {
+    "lang": "en",
+    "country": "gb",
+    "name": "English"
+  },
+  {
+    "lang": "ukr",
+    "country": "ukr",
+    "name": "Ukrainian"
+  }
+];
+
+/***/ }),
+
 /***/ "./src/store/index.js":
 /*!****************************!*\
   !*** ./src/store/index.js ***!
@@ -12989,6 +13041,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _countries__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../countries */ "./src/countries.js");
+
 
 
 
@@ -12999,8 +13053,11 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_1_
   state: {
     sourceLanguage: 'en',
     translationLanguage: 'ukr',
+    sourceLanguageFlag: '',
+    translationLanguageFlag: '',
     selectedText: '',
     translationText: '',
+    languages: _countries__WEBPACK_IMPORTED_MODULE_3__["languages"],
   },
   mutations: {
     setSourceLanguage(state, language) {
@@ -13015,19 +13072,38 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_1_
     setTranslationText(state, text) {
       state.translationText = text;
     },
+    setSourceLanguageFlag(state, flag) {
+      state.sourceLanguageFlag = flag;
+    },
+    setTranslationLanguageFlag(state, flag) {
+      state.translationLanguageFlag = flag;
+    }
   },
   actions: {
     translateText({ commit, state }) {
-      // return axios
-      //   .get(`https://api.mymemory.translated.net/get?q=${state.selectedText}&langpair=${state.sourceLanguage}|${state.translationLanguage}&key=4d22ec0bbf1a8a7327a7&user=shanti.oren`)
-      //   .then(({ data }) => {
-      //     console.log(data);
-      //     commit('setTranslationText', data.responseData.translatedText);
-      //   })
-      //   .catch(err => console.log(err));
+      return axios__WEBPACK_IMPORTED_MODULE_2___default.a
+        .get(`https://api.mymemory.translated.net/get?q=${state.selectedText}&langpair=${state.sourceLanguage}|${state.translationLanguage}&key=4d22ec0bbf1a8a7327a7&user=shanti.oren`)
+        .then(({ data }) => {
+          console.log(data);
+          commit('setTranslationText', data.responseData.translatedText);
+        })
+        .catch(err => console.log(err));
 
-      return commit('setTranslationText', 'Text');
+      // return commit('setTranslationText', 'Text');
     },
+    setFlags({ commit, state }) {
+      // const countries = [state.sourceLanguage, state.translationLanguage].join(';');
+      const countries = state.languages.map(({country}) => country).join(';');
+      
+      axios__WEBPACK_IMPORTED_MODULE_2___default.a
+        .get(`https://restcountries.eu/rest/v2/alpha/?codes=${countries}`)
+        .then(({data}) => {
+          commit('setSourceLanguageFlag', data[0].flag)
+          commit('setTranslationLanguageFlag', data[1].flag)
+          console.log(data)
+        })
+        .catch(err => console.log(err));
+    }
   },
 }));
 
