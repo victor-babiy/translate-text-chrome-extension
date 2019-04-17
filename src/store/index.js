@@ -37,7 +37,7 @@ export default new Vuex.Store({
   },
   actions: {
     translateText({ commit, state }) {
-      const url = `https://api.mymemory.translated.net/get?q=${state.selectedText}&langpair=${state.sourceLanguage}|${state.translationLanguage}&key=4d22ec0bbf1a8a7327a7&user=shanti.oren`;
+      const url = `https://api.mymemory.translated.net/get?q=${state.selectedText}&langpair=${state.sourceLanguage}|${state.translationLanguage}`;
 
       return axios
         .get(url)

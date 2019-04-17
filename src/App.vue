@@ -52,6 +52,7 @@ export default {
 
       if (text.length > 0) {
         this.$store.commit('setSelectedText', text);
+        this.$store.commit('setFlags');
         this.$store.dispatch('translateText')
           .then(() => {
             this.showPopup = true;
@@ -99,9 +100,6 @@ export default {
       this.$store.dispatch('translateText');
       this.$store.commit('setFlags');
     },
-  },
-  created() {
-    this.$store.commit('setFlags');
   },
   mounted() {
     document.addEventListener('selectionchange', debounce(this.handle, 100));
