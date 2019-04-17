@@ -2847,13 +2847,31 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     setPopupPosition() {
+      const EXTENTION_HEIGHT = 240;
+      const EXTENTION_WIDTH = 330;
       const { top, left, height } = window.getSelection()
         .getRangeAt(0)
         .getBoundingClientRect();
       const scrollTop = window.pageYOffset;
+      const windowHeight = window.innerHeight;
+      const windowWidth = window.innerWidth;
+      const extentionPositionBiggerThenWindowWidth = windowHeight > top + height + EXTENTION_HEIGHT;
+      const extentionPositionBiggerThenWindowHeight = windowWidth < left + EXTENTION_WIDTH;
 
-      this.postitionTop = top + height + scrollTop + 'px';
-      this.positionLeft = left + 'px';
+      if (extentionPositionBiggerThenWindowWidth) {
+        this.postitionTop = top + height + scrollTop + 'px';
+        this.positionLeft = left + 'px';
+      }
+
+      if (extentionPositionBiggerThenWindowHeight) {
+         this.postitionTop = top + height + scrollTop + 'px';
+         this.positionLeft = left - EXTENTION_WIDTH + 'px';
+      }
+      
+      if (!extentionPositionBiggerThenWindowWidth && !extentionPositionBiggerThenWindowHeight) {
+        this.postitionTop = top - EXTENTION_HEIGHT + scrollTop + 'px';
+        this.positionLeft = left + 'px';
+      }
     },
     setSourceLanguage(event) {
       this.$store.commit('setSourceLanguage', event.target.value);
