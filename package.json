@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack --watch --config webpack.config.js",
-    "build": "webpack --config webpack.config.js"
+    "dev": "webpack --watch",
+    "build": "webpack"
   },
   "dependencies": {
     "axios": "^0.18.0",
