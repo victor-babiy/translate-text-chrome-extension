@@ -2,12 +2,13 @@ import Vue from 'vue';
 import store from './store';
 import App from './App.vue';
 
-// TODO: refactor init and generate random id
 const div = document.createElement('div');
-div.id = 'app-random';
+const randomId = Math.random().toString(36).substr(2, 9);
+div.id = randomId;
 document.body.appendChild(div);
 
 new Vue({
   render: h => h(App),
   store,
-}).$mount('#app-random');
+}).$mount(`#${randomId}`);
+

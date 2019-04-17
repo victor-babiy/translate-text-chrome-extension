@@ -104,9 +104,7 @@ export default {
     this.$store.commit('setFlags');
   },
   mounted() {
-    // TODO: check
     document.addEventListener('selectionchange', debounce(this.handle, 100));
-    // document.addEventListener('selectionchange', this.handle);
   }
 }
 </script>

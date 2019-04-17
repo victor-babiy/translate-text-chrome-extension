@@ -4,8 +4,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   mode: 'development',
-  // TODO: remove
-  devtool: 'cheap-module-source-map',
   entry: {
     app: './src/app.js',
   },
