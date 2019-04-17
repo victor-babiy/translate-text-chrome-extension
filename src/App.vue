@@ -17,6 +17,7 @@
       :text="translationText"
       @setLanguage="setTranslationLanguage">
     </translate-block>
+    <button class="close" @click="closePopup">x</button>
   </div>
 </template>
 
@@ -80,6 +81,9 @@ export default {
       this.$store.dispatch('translateText');
       this.$store.commit('setFlags');
     },
+    closePopup() {
+      this.showPopup = false;
+    }
   },
   created() {
     this.$store.commit('setFlags');
@@ -106,6 +110,16 @@ export default {
     box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 3px;
     background-color: rgb(255, 255, 255);
     border-color: rgb(187, 187, 187) rgb(187, 187, 187) rgb(168, 168, 168);
-    padding: 10px;
+    padding: 30px 20px 10px 10px;
+  }
+  .close {
+    position: absolute;
+    top: 0px;
+    right: 6px;
+    font-size: 18px;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    color: #afa7a7;
   }
 </style>
