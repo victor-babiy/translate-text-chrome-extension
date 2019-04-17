@@ -2867,17 +2867,19 @@ __webpack_require__.r(__webpack_exports__);
     setSourceLanguage(event) {
       this.$store.commit('setSourceLanguage', event.target.value);
       this.$store.dispatch('translateText');
+      this.$store.commit('setSourceLanguageFlag');
     },
     setTranslationLanguage(event) {
       this.$store.commit('setTranslationLanguage', event.target.value);
       this.$store.dispatch('translateText');
+      this.$store.commit('setTranslationLanguageFlag');
     },
   },
   created() {
-    this.$store.dispatch('setFlags');
+    this.$store.commit('setFlags');
   },
   mounted() {
-    document.addEventListener('selectionchange', lodash_debounce__WEBPACK_IMPORTED_MODULE_0___default()(this.handle, 50));
+    document.addEventListener('selectionchange', lodash_debounce__WEBPACK_IMPORTED_MODULE_0___default()(this.handle, 250));
   }
 });
 
@@ -2932,7 +2934,7 @@ var render = function() {
             ),
             _vm._v(" "),
             _c("img", {
-              attrs: { src: _vm.sourceLanguageFlag, alt: "flag", width: "50" }
+              attrs: { src: _vm.sourceLanguageFlag, alt: "flag", width: "25" }
             }),
             _vm._v(" "),
             _c("p", [_vm._v(_vm._s(_vm.selectedText))])
@@ -2968,7 +2970,7 @@ var render = function() {
               attrs: {
                 src: _vm.translationLanguageFlag,
                 alt: "flag",
-                width: "50"
+                width: "25"
               }
             }),
             _vm._v(" "),
@@ -13017,12 +13019,14 @@ const languages = [
   {
     "lang": "en",
     "country": "gb",
-    "name": "English"
+    "name": "English",
+    "flag": "http://flags.fmcdn.net/data/flags/w1160/gb.png",
   },
   {
     "lang": "ukr",
     "country": "ukr",
-    "name": "Ukrainian"
+    "name": "Ukrainian",
+    "flag": "http://flags.fmcdn.net/data/flags/w1160/ua.png",
   }
 ];
 
@@ -13072,38 +13076,25 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_1_
     setTranslationText(state, text) {
       state.translationText = text;
     },
-    setSourceLanguageFlag(state, flag) {
-      state.sourceLanguageFlag = flag;
+    setFlags(state) {
+      const sourceLanguageFlag = state.languages.filter(country => country.lang === state.sourceLanguage)[0].flag;
+      const translationLanguage = state.languages.filter(country => country.lang === state.sourceLanguage)[0].flag;
+      state.sourceLanguageFlag = sourceLanguageFlag;
+      state.translationLanguageFlag = translationLanguage;
     },
-    setTranslationLanguageFlag(state, flag) {
-      state.translationLanguageFlag = flag;
-    }
   },
   actions: {
     translateText({ commit, state }) {
-      return axios__WEBPACK_IMPORTED_MODULE_2___default.a
-        .get(`https://api.mymemory.translated.net/get?q=${state.selectedText}&langpair=${state.sourceLanguage}|${state.translationLanguage}&key=4d22ec0bbf1a8a7327a7&user=shanti.oren`)
-        .then(({ data }) => {
-          console.log(data);
-          commit('setTranslationText', data.responseData.translatedText);
-        })
-        .catch(err => console.log(err));
+      // return axios
+      //   .get(`https://api.mymemory.translated.net/get?q=${state.selectedText}&langpair=${state.sourceLanguage}|${state.translationLanguage}&key=4d22ec0bbf1a8a7327a7&user=shanti.oren`)
+      //   .then(({ data }) => {
+      //     console.log(data);
+      //     commit('setTranslationText', data.responseData.translatedText);
+      //   })
+      //   .catch(err => console.log(err));
 
-      // return commit('setTranslationText', 'Text');
+      return commit('setTranslationText', 'Text');
     },
-    setFlags({ commit, state }) {
-      // const countries = [state.sourceLanguage, state.translationLanguage].join(';');
-      const countries = state.languages.map(({country}) => country).join(';');
-      
-      axios__WEBPACK_IMPORTED_MODULE_2___default.a
-        .get(`https://restcountries.eu/rest/v2/alpha/?codes=${countries}`)
-        .then(({data}) => {
-          commit('setSourceLanguageFlag', data[0].flag)
-          commit('setTranslationLanguageFlag', data[1].flag)
-          console.log(data)
-        })
-        .catch(err => console.log(err));
-    }
   },
 }));
 

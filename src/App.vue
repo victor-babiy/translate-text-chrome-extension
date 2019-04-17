@@ -15,20 +15,20 @@
           {{ sourceLanguage.name }}
         </option>
       </select>
-      <img :src="sourceLanguageFlag" alt="flag" width="50">
+      <img :src="sourceLanguageFlag" alt="flag" width="25">
       <p>{{ selectedText }}</p>
     </div>
 
     <div class="block">
       <select :value="translationLanguage" @change="setTranslationLanguage">
-        <option 
+        <option
           v-for="translationLanguage in languages"
           :value="translationLanguage.lang" 
           :key="translationLanguage.lang">
           {{ translationLanguage.name }}
         </option>
       </select>
-      <img :src="translationLanguageFlag" alt="flag" width="50">
+      <img :src="translationLanguageFlag" alt="flag" width="25">
       <p>{{ translationText }}</p>
     </div>
 
@@ -100,17 +100,19 @@ export default {
     setSourceLanguage(event) {
       this.$store.commit('setSourceLanguage', event.target.value);
       this.$store.dispatch('translateText');
+      this.$store.commit('setSourceLanguageFlag');
     },
     setTranslationLanguage(event) {
       this.$store.commit('setTranslationLanguage', event.target.value);
       this.$store.dispatch('translateText');
+      this.$store.commit('setTranslationLanguageFlag');
     },
   },
   created() {
-    this.$store.dispatch('setFlags');
+    this.$store.commit('setFlags');
   },
   mounted() {
-    document.addEventListener('selectionchange', debounce(this.handle, 50));
+    document.addEventListener('selectionchange', debounce(this.handle, 250));
   }
 }
 </script>
