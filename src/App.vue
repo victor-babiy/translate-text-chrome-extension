@@ -1,44 +1,30 @@
 <template>
   <div
-    v-if="showPopup"
     class="translate-extention"
+    v-if="showPopup"
     :style="{ top: postitionTop, left: positionLeft }">
-
-    <div class="block">
-      <select
-        :value="sourceLanguage" 
-        @change="setSourceLanguage">
-        <option
-          v-for="sourceLanguage in languages"
-          :value="sourceLanguage.lang"
-          :key="sourceLanguage.lang">
-          {{ sourceLanguage.name }}
-        </option>
-      </select>
-      <img :src="sourceLanguageFlag" alt="flag" width="25">
-      <p>{{ selectedText }}</p>
-    </div>
-
-    <div class="block">
-      <select :value="translationLanguage" @change="setTranslationLanguage">
-        <option
-          v-for="translationLanguage in languages"
-          :value="translationLanguage.lang" 
-          :key="translationLanguage.lang">
-          {{ translationLanguage.name }}
-        </option>
-      </select>
-      <img :src="translationLanguageFlag" alt="flag" width="25">
-      <p>{{ translationText }}</p>
-    </div>
-
+    <translate-block
+      :languages="languages"
+      :language="sourceLanguage"
+      :flag="sourceLanguageFlag"
+      :text="selectedText"
+      @setLanguage="setSourceLanguage">
+    </translate-block>
+    <translate-block
+      :languages="languages"
+      :language="translationLanguage"
+      :flag="translationLanguageFlag"
+      :text="translationText"
+      @setLanguage="setTranslationLanguage">
+    </translate-block>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import debounce from 'lodash.debounce';
+import translateBlock from './components/translate-block.vue';
 
-// shanti.oren@buycow.org
 export default {
   data() {
     return {
@@ -47,32 +33,18 @@ export default {
       positionLeft: '',
     }
   },
-  computed: {
-    sourceLanguage() {
-      return this.$store.state.sourceLanguage;
-    },
-    translationLanguage() {
-      return this.$store.state.translationLanguage;
-    },
-    selectedText() {
-      return this.$store.state.selectedText;
-    },
-    translationText() {
-      return this.$store.state.translationText;
-    },
-    countryFlags() {
-      return this.$store.state.countryFlags;
-    },
-    languages() {
-      return this.$store.state.languages;
-    },
-    sourceLanguageFlag() {
-      return this.$store.state.sourceLanguageFlag;
-    },
-    translationLanguageFlag() {
-      return this.$store.state.translationLanguageFlag;
-    }
+  components: {
+    translateBlock,
   },
+  computed: mapState([
+    'sourceLanguage',
+    'translationLanguage',
+    'selectedText',
+    'translationText',
+    'languages',
+    'sourceLanguageFlag',
+    'translationLanguageFlag',
+  ]),
   methods: {
     handle() {
       const text = window.getSelection().toString();
@@ -100,37 +72,39 @@ export default {
     setSourceLanguage(event) {
       this.$store.commit('setSourceLanguage', event.target.value);
       this.$store.dispatch('translateText');
-      this.$store.commit('setSourceLanguageFlag');
+      this.$store.commit('setFlags');
     },
     setTranslationLanguage(event) {
       this.$store.commit('setTranslationLanguage', event.target.value);
       this.$store.dispatch('translateText');
-      this.$store.commit('setTranslationLanguageFlag');
+      this.$store.commit('setFlags');
     },
   },
   created() {
     this.$store.commit('setFlags');
   },
   mounted() {
+    // TODO: check
     document.addEventListener('selectionchange', debounce(this.handle, 250));
+    // document.addEventListener('selectionchange', this.handle);
   }
 }
 </script>
 
 <style scoped>
+  * {
+    box-sizing: inherit;
+  }
   .translate-extention {
     position: absolute;
     z-index: 100;
-    width: 350px;
-    height: 250px;
+    width: 300px;
+    height: 200px;
     display: flex;
     flex-direction: column;
-    background-color: #fff;
-    box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.5);
-  }
-  .block {
-    height: 50%;
-    overflow-y: auto;
-    border-bottom: 1px solid black;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 3px;
+    background-color: rgb(255, 255, 255);
+    border-color: rgb(187, 187, 187) rgb(187, 187, 187) rgb(168, 168, 168);
+    padding: 10px;
   }
 </style>

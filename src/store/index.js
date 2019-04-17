@@ -30,22 +30,25 @@ export default new Vuex.Store({
     },
     setFlags(state) {
       const sourceLanguageFlag = state.languages.filter(country => country.lang === state.sourceLanguage)[0].flag;
-      const translationLanguage = state.languages.filter(country => country.lang === state.sourceLanguage)[0].flag;
+      const translationLanguage = state.languages.filter(country => country.lang === state.translationLanguage)[0].flag;
       state.sourceLanguageFlag = sourceLanguageFlag;
       state.translationLanguageFlag = translationLanguage;
     },
   },
   actions: {
     translateText({ commit, state }) {
-      // return axios
-      //   .get(`https://api.mymemory.translated.net/get?q=${state.selectedText}&langpair=${state.sourceLanguage}|${state.translationLanguage}&key=4d22ec0bbf1a8a7327a7&user=shanti.oren`)
-      //   .then(({ data }) => {
-      //     console.log(data);
-      //     commit('setTranslationText', data.responseData.translatedText);
-      //   })
-      //   .catch(err => console.log(err));
+      const url = `https://api.mymemory.translated.net/get?q=${state.selectedText}&langpair=${state.sourceLanguage}|${state.translationLanguage}&key=4d22ec0bbf1a8a7327a7&user=shanti.oren`;
 
-      return commit('setTranslationText', 'Text');
+      return axios
+        .get(url)
+        .then(({ data }) => {
+          if (data.responseStatus === '200') {
+            commit('setTranslationText', data.responseData.translatedText);
+          } else {
+            commit('setTranslationText', `<span style="color: red;">${data.responseData.translatedText}</span>`);
+          }
+        })
+        .catch(err => console.log(err));
     },
   },
 });
