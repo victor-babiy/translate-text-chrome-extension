@@ -65,8 +65,9 @@ export default {
       const { top, left, height } = window.getSelection()
         .getRangeAt(0)
         .getBoundingClientRect();
+      const scrollTop = window.pageYOffset;
 
-      this.postitionTop = top + height + 'px';
+      this.postitionTop = top + height + scrollTop + 'px';
       this.positionLeft = left + 'px';
     },
     setSourceLanguage(event) {
