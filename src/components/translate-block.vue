@@ -64,7 +64,7 @@ export default {
     margin: 0;
     padding: 5px;
     overflow-y: auto;
-    background-color: #eaeaea;
+    background-color: #f7f5f5;
   }
   .text::-webkit-scrollbar {
     width: 5px;
@@ -73,6 +73,6 @@ export default {
     background: #ddd;
   }
   .text::-webkit-scrollbar-thumb {
-    background: #666; 
+    background: #666;
   }
 </style>

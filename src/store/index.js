@@ -42,7 +42,8 @@ export default new Vuex.Store({
       return axios
         .get(url)
         .then(({ data }) => {
-          if (data.responseStatus === '200') {
+          console.log(data.responseStatus)
+          if (data.responseStatus == '200') {
             commit('setTranslationText', data.responseData.translatedText);
           } else {
             commit('setTranslationText', `<span style="color: red;">${data.responseData.translatedText}</span>`);

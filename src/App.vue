@@ -17,7 +17,7 @@
       :text="translationText"
       @setLanguage="setTranslationLanguage">
     </translate-block>
-    <button class="close" @click="closePopup">x</button>
+    <button class="close" @click="showPopup = false">x</button>
   </div>
 </template>
 
@@ -99,16 +99,13 @@ export default {
       this.$store.dispatch('translateText');
       this.$store.commit('setFlags');
     },
-    closePopup() {
-      this.showPopup = false;
-    }
   },
   created() {
     this.$store.commit('setFlags');
   },
   mounted() {
     // TODO: check
-    document.addEventListener('selectionchange', debounce(this.handle, 250));
+    document.addEventListener('selectionchange', debounce(this.handle, 100));
     // document.addEventListener('selectionchange', this.handle);
   }
 }

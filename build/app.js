@@ -1778,7 +1778,7 @@ exports.push([module.i, "\n*[data-v-7ba5bd90] {\n  box-sizing: inherit;\n}\n.tra
 
 exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, "\n.block[data-v-49a7426e] {\n  display: flex;\n  flex-direction: column;\n  height: 50%;\n  margin-bottom: 5px;\n}\n.select[data-v-49a7426e] {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  margin-bottom: 10px;\n}\nselect[data-v-49a7426e] {\n  width: 80%;\n}\n.flag[data-v-49a7426e] {\n  width: 40px;\n}\n.text[data-v-49a7426e] {\n  margin: 0;\n  padding: 5px;\n  overflow-y: auto;\n  background-color: #eaeaea;\n}\n.text[data-v-49a7426e]::-webkit-scrollbar {\n  width: 5px;\n}\n.text[data-v-49a7426e]::-webkit-scrollbar-track {\n  background: #ddd;\n}\n.text[data-v-49a7426e]::-webkit-scrollbar-thumb {\n  background: #666;\n}\n", ""]);
+exports.push([module.i, "\n.block[data-v-49a7426e] {\n  display: flex;\n  flex-direction: column;\n  height: 50%;\n  margin-bottom: 5px;\n}\n.select[data-v-49a7426e] {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  margin-bottom: 10px;\n}\nselect[data-v-49a7426e] {\n  width: 80%;\n}\n.flag[data-v-49a7426e] {\n  width: 40px;\n}\n.text[data-v-49a7426e] {\n  margin: 0;\n  padding: 5px;\n  overflow-y: auto;\n  background-color: #f7f5f5;\n}\n.text[data-v-49a7426e]::-webkit-scrollbar {\n  width: 5px;\n}\n.text[data-v-49a7426e]::-webkit-scrollbar-track {\n  background: #ddd;\n}\n.text[data-v-49a7426e]::-webkit-scrollbar-thumb {\n  background: #666;\n}\n", ""]);
 
 
 
@@ -2883,16 +2883,13 @@ __webpack_require__.r(__webpack_exports__);
       this.$store.dispatch('translateText');
       this.$store.commit('setFlags');
     },
-    closePopup() {
-      this.showPopup = false;
-    }
   },
   created() {
     this.$store.commit('setFlags');
   },
   mounted() {
     // TODO: check
-    document.addEventListener('selectionchange', lodash_debounce__WEBPACK_IMPORTED_MODULE_1___default()(this.handle, 250));
+    document.addEventListener('selectionchange', lodash_debounce__WEBPACK_IMPORTED_MODULE_1___default()(this.handle, 100));
     // document.addEventListener('selectionchange', this.handle);
   }
 });
@@ -2999,7 +2996,14 @@ var render = function() {
           _vm._v(" "),
           _c(
             "button",
-            { staticClass: "close", on: { click: _vm.closePopup } },
+            {
+              staticClass: "close",
+              on: {
+                click: function($event) {
+                  _vm.showPopup = false
+                }
+              }
+            },
             [_vm._v("x")]
           )
         ],
@@ -13268,7 +13272,8 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_1_
       return axios__WEBPACK_IMPORTED_MODULE_2___default.a
         .get(url)
         .then(({ data }) => {
-          if (data.responseStatus === '200') {
+          console.log(data.responseStatus)
+          if (data.responseStatus == '200') {
             commit('setTranslationText', data.responseData.translatedText);
           } else {
             commit('setTranslationText', `<span style="color: red;">${data.responseData.translatedText}</span>`);
